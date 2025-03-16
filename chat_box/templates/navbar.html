@@ -1,0 +1,138 @@
+<!-- Navigation bar -->
+<nav class="navbar navbar-expand-lg shadow-sm sticky-top custom-navbar">
+    <div class="container">
+        <a class="navbar-brand fw-bold text-white d-flex flex-column align-items-center" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                class="bi bi-calendar2-week" viewBox="0 0 16 16">
+                <path
+                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1z" />
+                <path
+                    d="M2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H3a.5.5 0 0 1-.5-.5zM11 7.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm-5 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z" />
+            </svg>
+            <p class="text-white fs-6 mb-0">Flight Booking</p>
+        </a>
+        <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarScroll">
+            <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ 'active' if request.endpoint == 'homepage.home' }} text-center" href="/">
+                        <i class="bi bi-house-door me-1"></i><br> Trang chủ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ 'active' if request.endpoint == 'datcho.booking_info' }} text-center"
+                        href="">
+                        <i class="bi bi-calendar-check me-1"></i><br>Đặt chỗ của bạn
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ 'active' if request.endpoint == 'datcho.booking_detailed'}} text-center"
+                        href="">
+                        <i class="bi bi-search me-1"></i><br>Tra cứu
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-3 {{ 'active' if request.endpoint == 'promotion.get_promotions_page'}} text-center"
+                        href="">
+                        <i class="bi bi-gift me-1"></i><br>Thông tin khuyến mãi
+                    </a>
+                </li>
+            </ul>
+
+            {% if session.user_info %}
+            <div class="dropdown">
+                <button class="btn dropdown-toggle d-flex align-items-center gap-2 text-white border-0" type="button"
+                    data-bs-toggle="dropdown">
+                    <img src="{{ session.user_info.avatar_url }}" alt="Avatar" class="rounded-circle shadow-sm"
+                        style="width: 35px; height: 35px; object-fit: cover;">
+                    <span class="fw-medium">{{ session.user_info.TenDangNhap }}</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                    <li>
+                        <a class="dropdown-item py-2 px-4" href="" onclick="handleLogout()">
+                            <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            {% else %}
+            <a href="" class="btn btn-light px-4" data-bs-toggle="tooltip"
+                title="Đăng nhập / Đăng ký để biết thêm nhiều thông tin ưu đãi">
+                <i class="bi bi-person me-2"></i>Đăng nhập / Đăng ký
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<style>
+    .custom-navbar {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    }
+
+    .navbar .nav-link {
+        position: relative;
+        transition: color 0.3s ease;
+        color: rgba(255, 255, 255, 0.60) !important;
+    }
+
+    .navbar .nav-link:hover,
+    .navbar .nav-link.active {
+        color: #ffffff !important;
+    }
+
+    .navbar .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: #ffffff;
+        transition: all 0.3s ease;
+    }
+
+    .navbar .nav-link:hover::after,
+    .navbar .nav-link.active::after {
+        width: 80%;
+        left: 10%;
+    }
+
+    .dropdown-menu {
+        min-width: 220px;
+        padding: 0.5rem 0;
+        border-radius: 0.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .dropdown-item {
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+        color: #1e3c72;
+    }
+
+    .dropdown-toggle:hover img {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+    }
+
+    @media (max-width: 991.98px) {
+        .navbar-nav {
+            padding: 1rem 0;
+        }
+
+        .navbar .nav-link::after {
+            display: none;
+        }
+
+        .navbar-toggler {
+            border: none !important;
+        }
+    }
+</style>

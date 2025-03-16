@@ -1,0 +1,216 @@
+<footer class="project-footer py-4 mt-5">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6 text-center text-md-start fade-in-up">
+                <h5 class="text-white small fw-bold mb-2 slide-in">ĐỒ ÁN MÔN HỌC</h5>
+                <h6 class="text-white-75 small mb-2 slide-in delay-1">CHUYÊN ĐỀ HỆ THỐNG THÔNG TIN</h6>
+                <div
+                    class="d-flex align-items-center gap-2 text-warning small justify-content-center justify-content-md-start mb-2 slide-in delay-2">
+                    <i class="bi bi-airplane-engines airplane-icon"></i>
+                    <span>Hệ Thống Đặt Vé Máy Bay Trực Tuyến</span>
+                </div>
+                <p class="text-info small mb-0 fade-in delay-3">
+                    Học kỳ 2 Năm học 2024-2025<br>
+                    HỌC VIỆN CÔNG NGHỆ BƯU CHÍNH VIỄN THÔNG CƠ SỞ TP.HCM
+                </p>
+            </div>
+
+            <div class="col-md-6 text-center text-md-end fade-in-up delay-2">
+                <div class="mb-3 hover-lift">
+                    <h6 class="text-white small fw-bold mb-2">Giảng viên hướng dẫn</h6>
+                    <p class="text-warning small mb-0">ThS. Nguyễn Anh Hào</p>
+                </div>
+                <div class="hover-lift">
+                    <h6 class="text-white small fw-bold mb-2">Liên hệ</h6>
+                    <div class="d-flex flex-column gap-1 align-items-center align-items-md-end">
+                        <div class="text-info small contact-item">
+                            <i class="bi bi-geo-alt me-2"></i>97 Man Thiện, Hiệp Phú, TP.Thủ Đức
+                        </div>
+                        <div class="text-info small contact-item">
+                            <i class="bi bi-telephone me-2"></i>(028) 3504 5808
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-white opacity-10 my-4 scale-in">
+
+        <div class="text-center fade-in-up delay-3">
+            <h6 class="text-white small fw-bold mb-3">Thành Viên Nhóm</h6>
+            <div class="row justify-content-center g-3">
+                <div class="col-md-4">
+                    <div class="p-2 rounded team-member">
+                        <p class="small fw-medium mb-0">Nguyễn Thị Phương Thảo</p>
+                        <small class="text-info">N21DCCN078</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-2 rounded team-member">
+                        <p class="small fw-medium mb-0">Nguyễn Thị Minh Thư</p>
+                        <small class="text-info">N21DCCN082</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="p-2 rounded team-member">
+                        <p class="small fw-medium mb-0">Trần Bình Phương Nhã</p>
+                        <small class="text-info">N21DCCN059</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .project-footer {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        overflow: hidden;
+    }
+
+    .text-white-75 {
+        color: rgba(255, 255, 255, 0.75) !important;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scaleX(0);
+        }
+
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease forwards;
+        opacity: 0;
+    }
+
+    .slide-in {
+        animation: slideIn 0.8s ease forwards;
+        opacity: 0;
+    }
+
+    .scale-in {
+        animation: scaleIn 1s ease forwards;
+        transform-origin: center;
+    }
+
+    .delay-1 {
+        animation-delay: 0.2s;
+    }
+
+    .delay-2 {
+        animation-delay: 0.4s;
+    }
+
+    .delay-3 {
+        animation-delay: 0.6s;
+    }
+
+    .team-member {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .team-member:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .team-member p {
+        color: white !important;
+    }
+
+    .team-member .text-info {
+        color: #7dd3fc !important;
+    }
+
+    .airplane-icon {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .contact-item {
+        transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+        transform: translateX(-5px);
+        color: #7dd3fc !important;
+    }
+
+    .hover-lift {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-3px);
+    }
+
+    @media (max-width: 767.98px) {
+        .text-md-end {
+            text-align: center !important;
+        }
+
+        .justify-content-md-start {
+            justify-content: center !important;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const footer = document.querySelector('.project-footer');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.visibility = 'visible';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        observer.observe(footer);
+    });
+</script>

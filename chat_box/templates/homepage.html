@@ -1,0 +1,540 @@
+{% extends "base.html" %}
+{% block content %}
+{% include 'navbar.html'%}
+<div class="container mt-5 mb-5">
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="alert alert-danger alert-dismissible fade show d-none" role="alert" id="validationAlert">
+        <span id="validationMessage"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-airplane-engines me-2"></i>
+                <h5 class="mb-0">Tìm kiếm chuyến bay</h5>
+            </div>
+        </div>
+        <div class="card-body">
+            <form action="" method=" POST" id="searchForm" class="needs-validation" novalidate>
+                <div class="row mb-4">
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="position-relative">
+                            <label class="form-label">Hành khách</label>
+                            <div class="dropdown w-100">
+                                <button
+                                    class="btn btn-outline-secondary dropdown-toggle w-100 d-flex align-items-center justify-content-between"
+                                    type="button" id="passengerButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span>1 Người lớn, 0 Trẻ em, 0 Em bé</span>
+                                    <i class="bi bi-person"></i>
+                                </button>
+                                <div class="dropdown-menu p-3" style="width: 300px;">
+                                    <div class="mb-3">
+                                        <label for="nguoiLon" class="form-label d-flex justify-content-between">
+                                            <span>Người lớn</span>
+                                            <small class="text-muted">(>12 tuổi)</small>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" id="nguoiLon" name="nguoiLon"
+                                                class="form-control text-center passenger-input" value="1" min="1"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="treEm" class="form-label d-flex justify-content-between">
+                                            <span>Trẻ em</span>
+                                            <small class="text-muted">(2-12 tuổi)</small>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" id="treEm" name="treEm"
+                                                class="form-control text-center passenger-input" value="0" min="0"
+                                                required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="emBe" class="form-label d-flex justify-content-between">
+                                            <span>Em bé</span>
+                                            <small class="text-muted">(<2 tuổi)</small>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" id="emBe" name="emBe"
+                                                class="form-control text-center passenger-input" value="0" min="0"
+                                                required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <label class="form-label">Hạng ghế</label>
+                        <select class="form-select" name="seat_class">
+                            {% for class in default_data.seat_class %}
+                            <option value="{{ class.value }}">{{ class.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6 mb-3">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class="form-label">Điểm đi</label>
+                                <input type="hidden" name="origin" id="origin">
+                                <div class="dropdown w-100">
+                                    <button
+                                        class="btn btn-outline-secondary dropdown-toggle w-100 d-flex align-items-center justify-content-between"
+                                        type="button" id="originDropdownButton" data-bs-toggle="dropdown">
+                                        <span>Chọn điểm đi</span>
+                                        <i class="bi bi-geo-alt"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="origin-list">
+                                        <li class="px-3">
+                                            <input type="text" class="form-control" id="searchInputOrigin"
+                                                placeholder="Tìm kiếm...">
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        {% for sb in san_bay %}
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                                onclick="selectOrigin('{{sb.thanh_pho}} ({{sb.ma_san_bay}})', '{{sb.ma_san_bay}}')">
+                                                {{sb.thanh_pho}} ({{sb.ma_san_bay}})
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 d-flex align-items-center justify-content-center my-2">
+                                <button class="btn btn-outline-dark rounded-circle" type="button" id="swap-button">
+                                    <i class="bi bi-arrow-left-right"></i>
+                                </button>
+                            </div>
+
+                            <div class="col-md-5">
+                                <label class="form-label">Điểm đến</label>
+                                <input type="hidden" name="destination" id="destination">
+                                <div class="dropdown w-100">
+                                    <button
+                                        class="btn btn-outline-secondary dropdown-toggle w-100 d-flex align-items-center justify-content-between"
+                                        type="button" id="destinationDropdownButton" data-bs-toggle="dropdown">
+                                        <span>Chọn điểm đến</span>
+                                        <i class="bi bi-geo-alt"></i>
+                                    </button>
+                                    <ul class="dropdown-menu w-100" id="destination-list">
+                                        <li class="px-3">
+                                            <input type="text" class="form-control" id="searchInputDestination"
+                                                placeholder="Tìm kiếm...">
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        {% for sb in san_bay %}
+                                        <li>
+                                            <a class="dropdown-item" href="#"
+                                                onclick="selectDestination('{{sb.thanh_pho}} ({{sb.ma_san_bay}})', '{{sb.ma_san_bay}}')">
+                                                {{sb.thanh_pho}} ({{sb.ma_san_bay}})
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày đi</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                    <input type="date" id="departure-date" name="departure-date" class="form-control"
+                                        value="{{ default_data.departure_date }}" min="{{ today_date }}" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày về</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                    <input type="date" id="return-date" name="return-date" class="form-control"
+                                        value="{{ default_data.return_date }}" min="{{ today_date }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="form-check float-end">
+                            <input type="checkbox" name="return-trip" class="form-check-input" id="return-trip">
+                            <label class="form-check-label" for="return-trip">Khứ hồi</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <button class="btn btn-outline-dark btn-lg" type="submit">
+                        <i class="bi bi-search me-2"></i>Tìm kiếm chuyến bay
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% include 'footer.html'%}
+<style>
+    #chatbot-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        z-index: 9999;
+        transition: background 0.3s;
+    }
+
+    #chatbot-button:hover {
+        background: linear-gradient(135deg, #0056d2, #5a00d1);
+    }
+
+    #chatbot-window {
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 370px;
+        height: 500px;
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        display: none;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 9999;
+    }
+
+    #chatbot-header {
+        background: linear-gradient(135deg, #007bff, #6610f2);
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #chatbot-header span {
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    #chatbot-messages {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        font-size: 14px;
+    }
+
+    .user-message,
+    .bot-message {
+        max-width: 80%;
+        margin: 8px 0;
+        padding: 10px 14px;
+        border-radius: 14px;
+        line-height: 1.4;
+        clear: both;
+    }
+
+    .user-message {
+        background: #d1e7ff;
+        color: #000;
+        margin-left: auto;
+        text-align: right;
+    }
+
+    .bot-message {
+        background: #e2e3e5;
+        color: #000;
+        margin-right: auto;
+    }
+
+    #chatbot-input {
+        display: flex;
+        border-top: 1px solid #dee2e6;
+        background-color: #fff;
+    }
+
+    #chat-input {
+        flex: 1;
+        border: none;
+        padding: 12px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    #send-button {
+        background: #007bff;
+        color: #fff;
+        border: none;
+        padding: 0 20px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    #send-button:hover {
+        background: #0056b3;
+    }
+</style>
+
+<!-- Chatbot HTML -->
+<button id="chatbot-button" title="Trợ lý AI">
+    <i class="bi bi-chat-dots"></i>
+</button>
+<div id="chatbot-window">
+    <div id="chatbot-header">
+        Trợ lý hỗ trợ đặt vé
+        <span id="chatbot-close">×</span>
+    </div>
+    <div id="chatbot-messages"></div>
+    <div id="chatbot-input">
+        <input type="text" id="chat-input" placeholder="Bạn cần giúp gì?">
+        <button id="send-button">Gửi</button>
+    </div>
+</div>
+
+<!-- Chatbot Script -->
+<script>
+    const chatbotBtn = document.getElementById("chatbot-button");
+    const chatbotWindow = document.getElementById("chatbot-window");
+    const chatbotClose = document.getElementById("chatbot-close");
+    const sendBtn = document.getElementById("send-button");
+    const chatInput = document.getElementById("chat-input");
+    const chatMessages = document.getElementById("chatbot-messages");
+
+    chatbotBtn.addEventListener("click", () => chatbotWindow.style.display = "flex");
+    chatbotClose.addEventListener("click", () => chatbotWindow.style.display = "none");
+    sendBtn.addEventListener("click", sendMessage);
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    function appendMessage(content, isUser) {
+        const msg = document.createElement("div");
+        msg.className = isUser ? "user-message" : "bot-message";
+        msg.textContent = content;
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
+
+        appendMessage(userMessage, true);
+        chatInput.value = "";
+        appendMessage("Đang xử lý...", false);
+
+        try {
+            const response = await fetch("/chatbot", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage })
+            });
+            const data = await response.json();
+            const botReply = data.reply || "Xin lỗi, hiện tại tôi không thể trả lời.";
+            chatMessages.lastChild.textContent = botReply;
+        } catch (error) {
+            chatMessages.lastChild.textContent = "Đã có lỗi xảy ra. Vui lòng thử lại.";
+        }
+    }
+</script>
+<script src="{{url_for('static', filename='js/signout.js')}}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const form = document.getElementById('searchForm');
+        const validationAlert = document.getElementById('validationAlert');
+        const validationMessage = document.getElementById('validationMessage');
+
+        document.querySelectorAll('.passenger-input').forEach(input => {
+            input.addEventListener('change', function () {
+                const minValue = parseInt(this.min) || 0;
+                this.value = Math.max(minValue, parseInt(this.value) || 0);
+
+                const adults = parseInt(document.getElementById('nguoiLon').value) || 0;
+                const children = document.getElementById('treEm').value;
+                const infants = parseInt(document.getElementById('emBe').value) || 0;
+
+                document.getElementById('passengerButton').querySelector('span').textContent =
+                    `${adults} Người lớn, ${children} Trẻ em, ${infants} Em bé`;
+                if (infants > adults) {
+                    validationAlert.classList.remove('d-none');
+                    validationMessage.textContent = 'Số em bé không được nhiều hơn số người lớn';
+                    return false;
+                }
+
+                validationAlert.classList.add('d-none');
+            });
+        });
+
+        // Filter dropdowns
+        function filterDropdown(inputId, dropdownId) {
+            const input = document.getElementById(inputId);
+            const filter = input.value.toLowerCase();
+            const dropdownItems = document.querySelectorAll(`#${dropdownId} .dropdown-item`);
+
+            dropdownItems.forEach(function (item) {
+                const text = item.textContent || item.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        window.selectOrigin = function (displayText, airportCode) {
+            document.getElementById('originDropdownButton').querySelector('span').textContent = displayText;
+            document.getElementById('origin').value = airportCode;
+        }
+
+        window.selectDestination = function (displayText, airportCode) {
+            document.getElementById('destinationDropdownButton').querySelector('span').textContent = displayText;
+            document.getElementById('destination').value = airportCode;
+        }
+
+        document.getElementById('searchInputOrigin').addEventListener('keyup', function () {
+            filterDropdown('searchInputOrigin', 'origin-list');
+        });
+
+        document.getElementById('searchInputDestination').addEventListener('keyup', function () {
+            filterDropdown('searchInputDestination', 'destination-list');
+        });
+
+        document.getElementById('swap-button').addEventListener('click', function (e) {
+            e.preventDefault();
+            let originButton = document.getElementById('originDropdownButton').querySelector('span');
+            let destinationButton = document.getElementById('destinationDropdownButton').querySelector('span');
+            let originInput = document.getElementById('origin');
+            let destinationInput = document.getElementById('destination');
+
+            let tempText = originButton.textContent;
+            let tempValue = originInput.value;
+
+            originButton.textContent = destinationButton.textContent;
+            originInput.value = destinationInput.value;
+
+            destinationButton.textContent = tempText;
+            destinationInput.value = tempValue;
+        });
+
+        document.getElementById('return-trip').addEventListener('change', function () {
+            const returnDateInput = document.getElementById('return-date');
+            returnDateInput.disabled = !this.checked;
+
+            if (this.checked) {
+                const departureDate = document.getElementById('departure-date').value;
+                returnDateInput.min = departureDate;
+                if (!returnDateInput.value) {
+                    returnDateInput.value = departureDate;
+                }
+            }
+        });
+
+        const today = new Date().toISOString().split('T')[0];
+        const departureDate = document.getElementById('departure-date');
+        const returnDate = document.getElementById('return-date');
+
+        departureDate.min = today;
+        departureDate.addEventListener('change', function () {
+            if (document.getElementById('return-trip').checked) {
+                returnDate.min = this.value;
+                if (returnDate.value && returnDate.value < this.value) {
+                    returnDate.value = this.value;
+                }
+            }
+        });
+
+        form.addEventListener('submit', function (e) {
+            if (!validatePassengers()) {
+                e.preventDefault();
+                return;
+            }
+
+            const origin = document.getElementById('origin').value;
+            const destination = document.getElementById('destination').value;
+
+            if (!origin || !destination) {
+                e.preventDefault();
+                validationAlert.classList.remove('d-none');
+                validationMessage.textContent = 'Vui lòng chọn điểm đi và điểm đến';
+                return;
+            }
+
+            if (origin === destination) {
+                e.preventDefault();
+                validationAlert.classList.remove('d-none');
+                validationMessage.textContent = 'Điểm đi và điểm đến không được trùng nhau';
+                return;
+            }
+
+            const departureDate = document.getElementById('departure-date').value;
+            if (!departureDate) {
+                e.preventDefault();
+                validationAlert.classList.remove('d-none');
+                validationMessage.textContent = 'Vui lòng chọn ngày đi';
+                return;
+            }
+
+            if (document.getElementById('return-trip').checked) {
+                const returnDate = document.getElementById('return-date').value;
+                if (!returnDate) {
+                    e.preventDefault();
+                    validationAlert.classList.remove('d-none');
+                    validationMessage.textContent = 'Vui lòng chọn ngày về';
+                    return;
+                }
+
+                if (returnDate < departureDate) {
+                    e.preventDefault();
+                    validationAlert.classList.remove('d-none');
+                    validationMessage.textContent = 'Ngày về phải sau ngày đi';
+                    return;
+                }
+            }
+        });
+
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+<script src="{{url_for('static', filename='js/signout.js')}}"></script>
+{% endblock %}

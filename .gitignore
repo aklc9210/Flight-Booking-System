@@ -1,0 +1,6 @@
+.env
+webservice/venv/
+webservice/__pycache__/
+client_app/venv/
+client_app/__pycache__/
+chat_box/venv/
